@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>JetBoots™ Sizing Assistant – v16.11.9.4</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg-main: radial-gradient(circle at top left, #162447 0, #05070b 50%, #020308 100%);
+      --bg-elevated: #050910;
+      --border-subtle: #272f42;
+      --text-main: #f5f7ff;
+      --text-muted: #8f9bb8;
+      --accent-blue: #3ab7ff;
+      --accent-blue-strong: #5fd3ff;
+      --accent-red: #ff4b6b;
+      --accent-red-strong: #ff7a8b;
+      --accent-green: #36d98a;
+      --accent-amber: #ffce5c;
+      --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.8);
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --radius-pill: 999px;
+      --font: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+      --badge-green: #20c878;
+      --badge-yellow: #ffd66b;
+      --badge-red: #ff5c7a;
+      --badge-blue: #3ab7ff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: var(--font);
+      background: var(--bg-main);
+      color: var(--text-main);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app-shell {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 18px 14px 32px;
+    }
+
+    @media (min-width: 820px) {
+      .app-shell { padding: 28px 0 40px; }
+    }
+
+    .header-card {
+      background: linear-gradient(135deg, #141927, #05070b);
+      border-radius: 26px;
+      padding: 18px 18px 14px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid #23293a;
+    }
+
+    .title-row { display: flex; flex-direction: column; gap: 4px; }
+    .app-title { font-size: 1.3rem; font-weight: 700; letter-spacing: 0.02em; }
+    .subtitle { font-size: 0.78rem; color: var(--text-muted); }
+
+    .view-toggle {
+      display: inline-flex;
+      margin-top: 10px;
+      padding: 3px;
+      background: rgba(7, 11, 20, 0.9);
+      border-radius: var(--radius-pill);
+      border: 1px solid #222736;
+    }
+
+    .view-toggle button {
+      flex: 1;
+      min-width: 110px;
+      border: none;
+      border-radius: var(--radius-pill);
+      padding: 7px 14px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: transparent;
+      cursor: pointer;
+      transition: background 0.12s ease, box-shadow 0.12s ease, color 0.12s ease, transform 0.06s ease;
+    }
+
+    .view-toggle button[data-view="simple"].active {
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-blue-strong));
+      color: #020308;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.4), 0 0 16px rgba(58,183,255,0.65);
+    }
+
+    .view-toggle button[data-view="pro"].active {
+      background: linear-gradient(135deg, var(--accent-red), var(--accent-red-strong));
+      color: #020308;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.5), 0 0 18px rgba(255,75,107,0.75);
+    }
+
+    .pro-view .view-toggle {
+      background: radial-gradient(circle at top, #2a0e18 0, #060710 55%);
+      border-color: #3c1b26;
+    }
+
+    .card {
+      background: var(--bg-elevated);
+      border-radius: var(--radius-lg);
+      padding: 14px 14px 16px;
+      margin-bottom: 12px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .card-header {
+      font-size: 0.92rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .field-row {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    @media (min-width: 640px) {
+      .field-row.inline { flex-direction: row; }
+      .field-row.inline .field { flex: 1; }
+    }
+
+    .field-label {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+    }
+
+    input[type="number"],
+    input[type="text"],
+    select,
+    textarea {
+      width: 100%;
+      border-radius: var(--radius-md);
+      border: 1px solid #232837;
+      background: #090c14;
+      color: var(--text-main);
+      padding: 10px 11px;
+      font-size: 0.86rem;
+      outline: none;
+    }
+
+    input::placeholder,
+    textarea::placeholder { color: #606778; }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 1px rgba(58,183,255,0.4);
+    }
+
+    .helper { font-size: 0.74rem; color: var(--text-muted); margin-top: 4px; }
+
+    .btn-primary,
+    .btn-secondary,
+    .btn-outline {
+      width: 100%;
+      border-radius: var(--radius-pill);
+      border: none;
+      padding: 11px 14px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-top: 8px;
+      cursor: pointer;
+      transition: transform 0.06s ease, box-shadow 0.06s ease, background 0.06s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-blue-strong));
+      color: #031019;
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.8);
+    }
+
+    .btn-secondary {
+      background: #151a26;
+      color: var(--text-main);
+      border: 1px solid #2a3143;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid #2a3143;
+      color: var(--text-main);
+    }
+
+    .btn-primary:active,
+    .btn-secondary:active,
+    .btn-outline:active {
+      transform: translateY(1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .badge {
+      border-radius: var(--radius-pill);
+      padding: 4px 10px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .badge-green {
+      background: rgba(52, 199, 89, 0.16);
+      color: var(--badge-green);
+      border: 1px solid rgba(52, 199, 89, 0.5);
+    }
+
+    .badge-yellow {
+      background: rgba(255, 204, 0, 0.16);
+      color: var(--badge-yellow);
+      border: 1px solid rgba(255, 204, 0, 0.6);
+    }
+
+    .badge-red {
+      background: rgba(255, 69, 94, 0.16);
+      color: var(--badge-red);
+      border: 1px solid rgba(255, 69, 94, 0.6);
+    }
+
+    .badge-blue {
+      background: rgba(58, 183, 255, 0.14);
+      color: var(--badge-blue);
+      border: 1px solid rgba(58, 183, 255, 0.7);
+    }
+
+    .results-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .results-body {
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .results-body strong {
+      color: var(--text-main);
+    }
+
+    .subsection-title {
+      font-size: 0.86rem;
+      font-weight: 600;
+      margin: 12px 0 4px;
+    }
+
+    .note-box {
+      background: rgba(255, 206, 92, 0.06);
+      border-radius: 14px;
+      border: 1px dashed rgba(255, 206, 92, 0.7);
+      padding: 8px 10px;
+      font-size: 0.8rem;
+      margin-top: 6px;
+    }
+
+    ul {
+      padding-left: 18px;
+      margin: 4px 0 4px;
+      font-size: 0.84rem;
+      color: var(--text-muted);
+    }
+
+    li + li { margin-top: 2px; }
+
+    /* Collapsible details */
+    details { margin-top: 6px; }
+
+    details summary {
+      list-style: none;
+      cursor: pointer;
+      font-size: 0.84rem;
+      color: var(--accent-blue);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    details summary::before {
+      content: "▸";
+      font-size: 0.7rem;
+      color: var(--accent-blue);
+      transform-origin: center;
+      transition: transform 0.15s ease;
+    }
+
+    details[open] summary::before {
+      transform: rotate(90deg);
+    }
+
+    .diagram-card {
+      background: radial-gradient(circle at top, #1d2433 0, #101521 45%, #05070c 100%);
+      border-radius: 18px;
+      padding: 12px 10px 14px;
+      border: 1px solid #272f42;
+      margin-top: 8px;
+    }
+
+    .diagram-title {
+      text-align: center;
+      font-size: 0.82rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .diagram-caption {
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .diagram-wrapper {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+
+    .diagram-wrapper svg {
+      max-width: 280px;
+      width: 100%;
+    }
+
+    .diagram-footer {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    .staff-only { display: none; }
+    .pro-view .staff-only { display: block; }
+    .simple-view .pro-only { display: none; }
+
+    .client-report-header {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .radio-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 8px;
+      font-size: 0.82rem;
+    }
+
+    .radio-row label {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+    }
+
+    textarea.report-output {
+      min-height: 140px;
+      resize: vertical;
+      font-size: 0.82rem;
+      line-height: 1.4;
+      font-family: var(--font);
+    }
+
+    .dual-btn-row {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    @media (min-width: 520px) {
+      .dual-btn-row {
+        flex-direction: row;
+      }
+      .dual-btn-row button {
+        flex: 1;
+      }
+    }
+
+    .footer-hint {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+<div class="app-shell simple-view" id="appRoot">
+  <header class="header-card">
+    <div class="title-row">
+      <div class="app-title">JetBoots™ Sizing Assistant</div>
+      <div class="subtitle">Staff v16.11.9.4 — UX restored · premium diagrams · Pro Cheat Sheet</div>
+    </div>
+    <div class="view-toggle" id="viewToggle">
+      <button type="button" data-view="simple" class="active">Simple View</button>
+      <button type="button" data-view="pro">Pro View</button>
+    </div>
+  </header>
+
+  <!-- CUSTOMER INPUTS -->
+  <section class="card" id="inputsCard">
+    <div class="card-header">Customer inputs</div>
+
+    <div class="field-row inline">
+      <div class="field">
+        <div class="field-label">Model</div>
+        <select id="model">
+          <option>JetBoots Prime</option>
+          <option>JetBoots PRO Plus</option>
+          <option>RecoveryAir Prime</option>
+          <option>RecoveryAir JetBoots</option>
+          <option>RecoveryAir PRO</option>
+        </select>
+      </div>
+      <div class="field">
+        <div class="field-label">Comfort preference</div>
+        <select id="comfort">
+          <option value="standard">Standard feel</option>
+          <option value="softer">Softer / roomier</option>
+          <option value="firmer">Firmer / more squeeze</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Leg measurement block -->
+    <div class="card-header" style="margin-top:6px;">Leg measurement</div>
+    <div class="field">
+      <div class="field-label">Outseam (cm) — floor → hip bone</div>
+      <input type="number" id="outseam" min="40" max="140" step="0.5" placeholder="e.g. 106" />
+      <div class="helper">Barefoot, measuring on the outside of the leg.</div>
+    </div>
+
+    <!-- Collapsible how-to with diagrams -->
+    <details id="diagramDetails">
+      <summary>How to measure outseam (diagram)</summary>
+
+      <!-- Corrected hip-bone → floor diagram -->
+      <div class="diagram-card">
+        <div class="diagram-title">Hip bone to floor — visual guide</div>
+        <div class="diagram-caption">
+          Stand straight, barefoot. Measure on the outside of the leg from the
+          <strong>top of the hip bone</strong> straight down to the floor.
+        </div>
+        <div class="diagram-wrapper">
+          <svg viewBox="0 0 120 260" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <!-- body outline -->
+            <g stroke="#f5f7ff" stroke-width="2.2" fill="none"
+               stroke-linecap="round" stroke-linejoin="round">
+
+              <!-- head -->
+              <circle cx="60" cy="32" r="16"/>
+
+              <!-- shoulders + torso -->
+              <path d="M32 60 H88" />
+              <path d="M40 60 Q60 90 48 132" />
+              <path d="M80 60 Q60 90 72 132" />
+
+              <!-- hips -->
+              <path d="M48 132 Q60 140 72 132"/>
+
+              <!-- legs – extended to the real floor line (y = 220) -->
+              <path d="M48 132 V220"/>
+              <path d="M72 132 V220"/>
+
+              <!-- feet now sit directly on the floor -->
+              <path d="M42 220 H54" />
+              <path d="M66 220 H78" />
+            </g>
+
+            <!-- hip bone markers -->
+            <g fill="#f5f7ff">
+              <circle cx="48" cy="132" r="3.2"/>
+              <circle cx="72" cy="132" r="3.2"/>
+            </g>
+
+            <!-- measurement dashed line -->
+            <g stroke="#ffd86d" stroke-width="2" stroke-dasharray="4,4" stroke-linecap="round">
+              <path d="M86 132 V220"/>
+            </g>
+
+            <!-- floor line -->
+            <line x1="24" y1="220" x2="104" y2="220" stroke="#f5f7ff" stroke-width="1.6"/>
+
+            <!-- labels -->
+            <text x="88" y="122" font-size="7" fill="#f5f7ff">Hip bone</text>
+            <text x="88" y="160" font-size="7" fill="#ffd86d" transform="rotate(90 88 160)">Measure this distance</text>
+            <text x="40" y="234" font-size="7" fill="#f5f7ff">Floor / barefoot</text>
+          </svg>
+        </div>
+        <div class="diagram-footer">
+          Start at the <strong>top of the hip bone</strong> on the outside of the leg and
+          read the value at floor level. Enter that value in <strong>Outseam (cm)</strong>.
+        </div>
+      </div>
+
+      <!-- Premium proportion comparison diagram -->
+      <div class="diagram-card">
+        <div class="diagram-title">Different leg proportions, same height</div>
+        <div class="diagram-caption">
+          Both silhouettes are the same overall height, but the hip-to-floor distance is different.
+        </div>
+        <div class="diagram-wrapper">
+          <svg viewBox="0 0 360 300" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <!-- FLOOR LINE -->
+            <line x1="20" y1="270" x2="340" y2="270"
+                  stroke="#f5f7ff" stroke-width="2" />
+
+            <!-- LEFT FIGURE — LONG TORSO / SHORT LEGS -->
+            <g stroke="#f5f7ff" stroke-width="3" fill="none"
+               stroke-linecap="round" stroke-linejoin="round">
+
+              <!-- HEAD -->
+              <circle cx="100" cy="50" r="22" />
+
+              <!-- NECK -->
+              <line x1="100" y1="72" x2="100" y2="90" />
+
+              <!-- SHOULDERS -->
+              <path d="M70 90 Q100 82 130 90" />
+
+              <!-- ARMS -->
+              <path d="M70 90 
+                       Q60 150 75 210" />
+              <path d="M130 90 
+                       Q140 150 125 210" />
+
+              <!-- TORSO (long) -->
+              <path d="M78 90 
+                       Q100 145 90 190
+                       Q100 205 110 190
+                       Q100 145 122 90" />
+
+              <!-- HIPS (lower) -->
+              <path d="M90 190 Q100 199 110 190" />
+
+              <!-- SHORT LEGS -->
+              <line x1="90" y1="190" x2="90" y2="270" />
+              <line x1="110" y1="190" x2="110" y2="270" />
+
+              <!-- FEET -->
+              <path d="M84 270 H96" />
+              <path d="M104 270 H116" />
+            </g>
+
+            <!-- HIP MARKERS (LEFT) -->
+            <circle cx="90" cy="190" r="5" fill="#ffd86d" />
+            <circle cx="110" cy="190" r="5" fill="#ffd86d" />
+
+            <!-- HIP → FLOOR LINE (LEFT) -->
+            <line x1="100" y1="190" x2="100" y2="270"
+                  stroke="#ffd86d" stroke-width="2"
+                  stroke-dasharray="6,6" />
+
+
+            <!-- RIGHT FIGURE — SHORT TORSO / LONG LEGS -->
+            <g stroke="#f5f7ff" stroke-width="3" fill="none"
+               stroke-linecap="round" stroke-linejoin="round">
+
+              <!-- HEAD -->
+              <circle cx="260" cy="50" r="22" />
+
+              <!-- NECK -->
+              <line x1="260" y1="72" x2="260" y2="90" />
+
+              <!-- SHOULDERS -->
+              <path d="M230 90 Q260 82 290 90" />
+
+              <!-- ARMS -->
+              <path d="M230 90 
+                       Q220 150 235 210" />
+              <path d="M290 90 
+                       Q300 150 285 210" />
+
+              <!-- TORSO (short) -->
+              <path d="M238 90
+                       Q260 120 250 155
+                       Q260 165 270 155
+                       Q260 120 282 90" />
+
+              <!-- HIPS (higher) -->
+              <path d="M250 155 Q260 164 270 155" />
+
+              <!-- LONG LEGS -->
+              <line x1="250" y1="155" x2="250" y2="270" />
+              <line x1="270" y1="155" x2="270" y2="270" />
+
+              <!-- FEET -->
+              <path d="M244 270 H256" />
+              <path d="M264 270 H276" />
+            </g>
+
+            <!-- HIP MARKERS (RIGHT) -->
+            <circle cx="250" cy="155" r="5" fill="#ffd86d" />
+            <circle cx="270" cy="155" r="5" fill="#ffd86d" />
+
+            <!-- HIP → FLOOR LINE (RIGHT) -->
+            <line x1="260" y1="155" x2="260" y2="270"
+                  stroke="#ffd86d" stroke-width="2"
+                  stroke-dasharray="6,6" />
+
+            <!-- HIP HEIGHT DIFFERENCE MARKER -->
+            <line x1="315" y1="155" x2="315" y2="190"
+                  stroke="#ffd86d" stroke-width="2"
+                  stroke-dasharray="4,4" />
+
+            <!-- ticks -->
+            <line x1="309" y1="155" x2="321" y2="155" stroke="#ffd86d" stroke-width="2" />
+            <line x1="309" y1="190" x2="321" y2="190" stroke="#ffd86d" stroke-width="2" />
+
+            <text x="320" y="173" font-size="8" fill="#ffd86d"
+                  transform="rotate(-90 320 173)">
+              Hip height difference
+            </text>
+
+            <!-- LABELS -->
+            <text x="40" y="292" fill="#8f9bb8" font-size="10">
+              Long torso / short legs
+            </text>
+            <text x="200" y="292" fill="#8f9bb8" font-size="10">
+              Short torso / long legs
+            </text>
+          </svg>
+        </div>
+        <div class="diagram-footer">
+          This is why height isn’t reliable — two people of the same height can have
+          <strong>very different hip-to-floor distances</strong>.
+        </div>
+      </div>
+    </details>
+
+    <!-- Measurement method -->
+    <div class="field" style="margin-top:10px;">
+      <div class="field-label">Measurement method</div>
+      <select id="method">
+        <option value="manual">Manual / not specified</option>
+        <option value="tape">Tape measure (checked)</option>
+        <option value="ar">AR / phone measure (checked)</option>
+      </select>
+      <div class="helper">
+        Tape and AR readings significantly increase confidence in the result.
+      </div>
+    </div>
+
+    <!-- Height -->
+    <div class="field-row inline" style="margin-top:10px;">
+      <div class="field">
+        <div class="field-label">Customer height (optional)</div>
+        <div class="field-row inline">
+          <div class="field">
+            <input type="number" id="heightFeet" min="4" max="7" step="1" placeholder="ft" />
+          </div>
+          <div class="field">
+            <input type="number" id="heightInches" min="0" max="11" step="1" placeholder="in" />
+          </div>
+        </div>
+        <div class="helper">Use either feet/inches or cm below — whichever is quickest.</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Height in cm (optional)</div>
+        <input type="number" id="heightCm" min="120" max="210" step="0.5" placeholder="e.g. 178" />
+      </div>
+    </div>
+
+    <!-- STAFF TOOLS -->
+    <div class="staff-only">
+      <div class="card-header" style="margin-top:10px;">Staff tools (trouser & calf cues)</div>
+      <div class="field-row inline">
+        <div class="field">
+          <div class="field-label">Trouser waist (inches) — optional</div>
+          <input type="number" id="waist" min="20" max="60" step="0.5" placeholder="e.g. 34">
+        </div>
+        <div class="field">
+          <div class="field-label">Leg length (label)</div>
+          <select id="trouserLength">
+            <option value="unsure">Not sure</option>
+            <option value="short">Short / 29–30"</option>
+            <option value="regular">Regular / 31–33"</option>
+            <option value="long">Long / 34–36"+</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-row inline">
+        <div class="field">
+          <div class="field-label">Calf circumference (cm) — optional</div>
+          <input type="number" id="calf" min="25" max="60" step="0.5" placeholder="e.g. 40">
+          <div class="helper">Used only for comfort notes on very large calves.</div>
+        </div>
+        <div class="field">
+          <div class="field-label">Athletic build</div>
+          <select id="athletic">
+            <option value="standard">Standard</option>
+            <option value="athletic">Athletic / muscular legs</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:8px;">
+      <button class="btn-primary" id="recommendBtn">Get recommendation</button>
+      <button class="btn-secondary" id="resetBtn">Reset</button>
+      <div class="helper" id="statusText" style="text-align:center;margin-top:6px;">
+        Enter measurements above to produce a size recommendation.
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section class="card" id="resultsCard">
+    <div class="card-header">Results</div>
+    <div class="badge-row" id="badgeRow"></div>
+    <div class="results-title" id="resultsTitle">
+      No size calculated yet.
+    </div>
+    <div class="results-body" id="resultsBody">
+      Fill in the measurements above and tap <strong>Get recommendation</strong> to see the suggested size and guidance.
+    </div>
+    <div class="note-box" id="measurementCheckBox" style="display:none;"></div>
+
+    <div class="pro-only">
+      <div class="subsection-title">Fit nuances</div>
+      <div class="note-box" id="fitNuancesBox">
+        When a result is calculated, you’ll see notes here on how the size should sit on the hip and knee,
+        plus a quick fit diagnostic.
+      </div>
+
+      <div class="subsection-title" style="margin-top:10px;">Perfect Fit checklist</div>
+      <ul>
+        <li>Heel sits fully down in the heel pocket.</li>
+        <li>Top edge sits just below the hip bone.</li>
+        <li>No pulling is needed to get the heel seated.</li>
+        <li>No pinching behind the knee during inflation.</li>
+        <li>Pressure feels even from ankle to thigh.</li>
+        <li>Knee bends comfortably without restriction.</li>
+      </ul>
+
+      <details style="margin-top:10px;">
+        <summary>Personal Shopper short scripts</summary>
+        <ul>
+          <li><strong>Explaining the size:</strong> “We’ve sized these from your hip-to-floor measurement, so the heel sits naturally and the knee crease is protected.”</li>
+          <li><strong>Borderline case:</strong> “You’re between two sizes — we’ll try both, but this is the one that should sit best on the hip bone.”</li>
+          <li><strong>Gift / remote sizing:</strong> “This is our best advisory size from the measurements; I’d recommend a fitting before you fully unbox or dispose of packaging.”</li>
+        </ul>
+      </details>
+
+      <!-- PRO-ONLY CHEAT SHEET (minimal, collapsible) -->
+      <details class="staff-only" style="margin-top:10px;">
+        <summary>Pro Cheat Sheet (staff only)</summary>
+        <div class="helper" style="margin-top:4px;">
+          Use this as a quick reference during busy periods or training.
+        </div>
+
+        <div class="subsection-title" style="margin-top:8px;font-size:0.8rem;">1. Quick sizing reference</div>
+        <ul>
+          <li><strong>JetBoots leg length:</strong> Outseam minus ~10 cm gives the official Therabody leg length.</li>
+          <li><strong>RecoveryAir leg length:</strong> Outseam minus ~12 cm gives the official Therabody leg length.</li>
+          <li><strong>JetBoots bands:</strong> Short &lt; 81 cm · Regular 81–92 cm · Long ≥ 93 cm (Therabody leg length).</li>
+          <li><strong>RecoveryAir bands:</strong> Small &lt; 80 cm · Medium 80–94 cm · Large ≥ 95 cm.</li>
+          <li><strong>Borderline:</strong> If Therabody leg length is within ~1 cm of a boundary, treat as “between sizes”.</li>
+          <li><strong>Proportion cue:</strong> Leg &lt; 42% of height = shorter legs; &gt; 50% = longer legs. Expect boots to sit a touch lower/higher on the hip.</li>
+        </ul>
+
+        <div class="subsection-title" style="margin-top:8px;font-size:0.8rem;">2. Fit troubleshooting</div>
+        <ul>
+          <li><strong>Boot feels low on hip:</strong> Check heel is fully down. If borderline, the longer band may be better (as long as knee remains free).</li>
+          <li><strong>Boot feels high on hip:</strong> Check knee comfort. If it pushes into hip or knee crease and they’re borderline, try the shorter band.</li>
+          <li><strong>Pinch behind knee:</strong> Re-check outseam. Usually means the boot is slightly too long or riding too high.</li>
+          <li><strong>Heel won’t sit fully down:</strong> Often the band is too long. Try the shorter size if they’re on the edge.</li>
+          <li><strong>Very loose around calf:</strong> Check calf circumference and athletic build. Explain that compression feel can be tuned via pressure level as well as size.</li>
+        </ul>
+
+        <div class="subsection-title" style="margin-top:8px;font-size:0.8rem;">3. Talking points</div>
+        <ul>
+          <li>“We size from your <strong>hip-to-floor measurement</strong>, not just height — that’s what protects the knee crease.”</li>
+          <li>“This leg length ties back to the <strong>official Therabody size chart</strong>, so you’re in the correct band.”</li>
+          <li>“Our goal is simple: <strong>heel down, knee free, hip bone clear</strong>.”</li>
+          <li>“If you’re between sizes, we’ll try both so you can feel the difference before deciding.”</li>
+          <li>“For gifts, we treat this as an <strong>advisory size</strong> and recommend a fitting before recycling any packaging.”</li>
+        </ul>
+
+        <div class="subsection-title" style="margin-top:8px;font-size:0.8rem;">4. Re-measure triggers</div>
+        <ul>
+          <li>Hip-to-floor reading feels very high or low versus their height.</li>
+          <li>Leg proportion &lt; 42% or &gt; 50% of height and the fit feels off.</li>
+          <li>Trouser leg label strongly disagrees with the recommended band and the customer is unsure.</li>
+          <li>Measurement taken over chunky clothing or shoes.</li>
+          <li>Customer wasn’t sure where the hip bone was — recheck and confirm.</li>
+        </ul>
+
+        <div class="subsection-title" style="margin-top:8px;font-size:0.8rem;">5. Special notes</div>
+        <ul>
+          <li><strong>Athletic / muscular legs:</strong> Expect a snugger feel around the calf and thigh — comfort and knee freedom matter more than the label.</li>
+          <li><strong>Slender legs:</strong> A slightly longer band can still work if the heel sits down and the knee is clear. Use pressure level to tune the feel.</li>
+          <li><strong>RecoveryAir on a bed/table:</strong> Always re-check that the heel is fully seated and the knee isn’t loaded in the crease when the leg is straight.</li>
+          <li><strong>Older or comfort-focused clients:</strong> Favour ease of use and comfort over maximum squeeze — mention pressure adjustments as a tool.</li>
+        </ul>
+      </details>
+    </div>
+  </section>
+
+  <!-- CLIENT REPORT / WHATSAPP -->
+  <section class="card pro-only" id="reportCard">
+    <div class="card-header">Client report & WhatsApp summary</div>
+
+    <div class="client-report-header">Fit status</div>
+    <div class="radio-row">
+      <label>
+        <input type="radio" name="fitStatus" value="confirmed" checked />
+        <span>Confirmed fit in-store</span>
+      </label>
+      <label>
+        <input type="radio" name="fitStatus" value="advisory" />
+        <span>Advisory sizing (no fitting yet)</span>
+      </label>
+    </div>
+
+    <div class="subsection-title">WhatsApp summary</div>
+    <textarea id="whatsAppText" class="report-output" readonly>Run a sizing in the app first to generate the advisory message here.</textarea>
+
+    <div class="dual-btn-row">
+      <button class="btn-primary" id="copyWhatsAppBtn">Copy WhatsApp message</button>
+      <button class="btn-outline" id="printBtn">Printable client report</button>
+    </div>
+
+    <div class="footer-hint">
+      The WhatsApp summary is intentionally short and plain-language. Use the full client report if you need more detail.
+    </div>
+  </section>
+</div>
+
+<script>
+  (function() {
+    const appRoot = document.getElementById('appRoot');
+    const els = {
+      viewToggle: document.getElementById('viewToggle'),
+      model: document.getElementById('model'),
+      comfort: document.getElementById('comfort'),
+      outseam: document.getElementById('outseam'),
+      method: document.getElementById('method'),
+      heightFeet: document.getElementById('heightFeet'),
+      heightInches: document.getElementById('heightInches'),
+      heightCm: document.getElementById('heightCm'),
+      waist: document.getElementById('waist'),
+      trouserLength: document.getElementById('trouserLength'),
+      calf: document.getElementById('calf'),
+      athletic: document.getElementById('athletic'),
+      recommendBtn: document.getElementById('recommendBtn'),
+      resetBtn: document.getElementById('resetBtn'),
+      statusText: document.getElementById('statusText'),
+      badgeRow: document.getElementById('badgeRow'),
+      resultsTitle: document.getElementById('resultsTitle'),
+      resultsBody: document.getElementById('resultsBody'),
+      measurementCheckBox: document.getElementById('measurementCheckBox'),
+      fitNuancesBox: document.getElementById('fitNuancesBox'),
+      whatsAppText: document.getElementById('whatsAppText'),
+      copyWhatsAppBtn: document.getElementById('copyWhatsAppBtn'),
+      printBtn: document.getElementById('printBtn')
+    };
+
+    /* ---------- VIEW TOGGLE ---------- */
+    els.viewToggle.addEventListener('click', (e) => {
+      const btn = e.target.closest('button');
+      if (!btn) return;
+      const view = btn.dataset.view;
+      Array.from(els.viewToggle.querySelectorAll('button')).forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      if (view === 'pro') {
+        appRoot.classList.add('pro-view');
+        appRoot.classList.remove('simple-view');
+      } else {
+        appRoot.classList.add('simple-view');
+        appRoot.classList.remove('pro-view');
+      }
+    });
+
+    /* ---------- HELPERS ---------- */
+    function parseNumber(value) {
+      const n = parseFloat(value);
+      return isNaN(n) ? null : n;
+    }
+
+    function clamp(v, min, max) {
+      return Math.min(max, Math.max(min, v));
+    }
+
+    function cmFromFeetInches(ft, inch) {
+      if (ft == null && inch == null) return null;
+      const f = ft || 0;
+      const i = inch || 0;
+      return f * 30.48 + i * 2.54;
+    }
+
+    function getLegBand(model, officialCm) {
+      const isJetBoots = model.indexOf('JetBoots') === 0;
+      if (officialCm == null) {
+        return { band: 'Unknown', system: isJetBoots ? 'JetBoots' : 'RecoveryAir' };
+      }
+      if (isJetBoots) {
+        if (officialCm < 81) return { band: 'Short', system: 'JetBoots' };
+        if (officialCm < 93) return { band: 'Regular', system: 'JetBoots' };
+        return { band: 'Long', system: 'JetBoots' };
+      } else {
+        if (officialCm < 80) return { band: 'Small', system: 'RecoveryAir' };
+        if (officialCm < 95) return { band: 'Medium', system: 'RecoveryAir' };
+        return { band: 'Large', system: 'RecoveryAir' };
+      }
+    }
+
+    function getBandBoundaries(model) {
+      const isJetBoots = model.indexOf('JetBoots') === 0;
+      return isJetBoots ? [81, 93] : [80, 95];
+    }
+
+    function isBorderline(model, officialCm) {
+      if (officialCm == null) return false;
+      const boundaries = getBandBoundaries(model);
+      return boundaries.some(b => Math.abs(officialCm - b) <= 1.0);
+    }
+
+    function getTrouserCue(trouserLength) {
+      if (trouserLength === 'short') return 'Short';
+      if (trouserLength === 'regular') return 'Regular';
+      if (trouserLength === 'long') return 'Long';
+      return null;
+    }
+
+    function computeLegProportion(officialLeg, heightCm) {
+      if (!officialLeg || !heightCm) return null;
+      return (officialLeg / heightCm) * 100;
+    }
+
+    function isProportionEdgeCase(ratioPct) {
+      if (ratioPct == null) return false;
+      return (ratioPct < 42) || (ratioPct > 50);
+    }
+
+    function methodBadgeLabel(method) {
+      switch (method) {
+        case 'ar':
+          return 'AR / phone measure (checked)';
+        case 'tape':
+          return 'Tape measure (checked)';
+        default:
+          return 'Manual / not specified';
+      }
+    }
+
+    function computeConfidence(opts) {
+      const {
+        method,
+        heightKnown,
+        borderline,
+        propEdge,
+        band,
+        trouserCue
+      } = opts;
+
+      if (!band || band === 'Unknown') return null;
+
+      let base;
+      if (method === 'ar') {
+        base = 99;
+      } else if (method === 'tape') {
+        base = 97;
+      } else {
+        base = 86;
+      }
+
+      if (!heightKnown) base -= 2;
+      if (borderline) base -= 3;
+      if (propEdge) base -= 2;
+
+      if (trouserCue && band && trouserCue !== band) {
+        base -= 3;
+      } else if (trouserCue && band && trouserCue === band) {
+        base += 1;
+      }
+
+      if (method === 'ar') {
+        base = clamp(base, 97, 99);
+      } else if (method === 'tape') {
+        base = clamp(base, 96, 98);
+      } else {
+        base = clamp(base, 82, 90);
+      }
+
+      return Math.round(base);
+    }
+
+    function buildBadges(opts) {
+      const {
+        model,
+        band,
+        trouserCue,
+        method,
+        confidence,
+        borderline,
+        propEdge
+      } = opts;
+
+      const badges = [];
+
+      if (band && band !== 'Unknown') {
+        badges.push({ label: `${band} size`, tone: 'green' });
+      }
+
+      if (trouserCue) {
+        if (band && trouserCue !== band) {
+          badges.push({
+            label: `Trouser leg: ${trouserCue} (check vs ${band})`,
+            tone: 'yellow'
+          });
+        } else {
+          badges.push({
+            label: `Trouser leg: ${trouserCue}`,
+            tone: 'blue'
+          });
+        }
+      }
+
+      if (confidence != null) {
+        let tone = 'green';
+        if (confidence < 88) tone = 'yellow';
+        if (confidence < 82) tone = 'red';
+        badges.push({
+          label: `Confidence: ${confidence}%`,
+          tone
+        });
+      }
+
+      if (borderline) {
+        badges.push({
+          label: 'Between sizes',
+          tone: 'yellow'
+        });
+      }
+
+      if (propEdge) {
+        badges.push({
+          label: 'Long / short leg proportion',
+          tone: 'yellow'
+        });
+      }
+
+      const isJetBoots = model.indexOf('JetBoots') === 0;
+      badges.push({
+        label: isJetBoots ? 'JetBoots leg system' : 'RecoveryAir leg system',
+        tone: 'blue'
+      });
+
+      badges.push({
+        label: methodBadgeLabel(method),
+        tone: 'blue'
+      });
+
+      return badges;
+    }
+
+    function renderBadges(badges) {
+      els.badgeRow.innerHTML = '';
+      badges.forEach(b => {
+        const span = document.createElement('span');
+        span.className = `badge badge-${b.tone}`;
+        span.textContent = b.label;
+        els.badgeRow.appendChild(span);
+      });
+    }
+
+    function buildMainParagraph(opts) {
+      const {
+        model,
+        outseam,
+        officialLeg,
+        band,
+        borderline,
+        method,
+        comfort,
+        trouserCue,
+        ratioPct
+      } = opts;
+
+      const isJetBoots = model.indexOf('JetBoots') === 0;
+      const lines = [];
+
+      if (!band || band === 'Unknown') {
+        lines.push(`Sizing is based on the hip-to-floor measurement of ${outseam.toFixed(1)} cm.`);
+        if (officialLeg != null) {
+          lines.push(`This converts to an official Therabody leg length of ${officialLeg.toFixed(1)} cm.`);
+        }
+        lines.push(`Once we have a valid band, we’ll show the recommended size here.`);
+        return lines.join(' ');
+      }
+
+      lines.push(`<strong>${band}</strong> is recommended for <strong>${model}</strong> from a hip-to-floor measurement of <strong>${outseam.toFixed(1)} cm</strong>.`);
+      lines.push(`This converts to an official Therabody leg length of <strong>${officialLeg.toFixed(1)} cm</strong>.`);
+
+      if (borderline) {
+        lines.push(`You’re close to the boundary between two size bands, so it’s worth trying both if the customer is sensitive to fit.`);
+      }
+
+      if (trouserCue) {
+        if (trouserCue === band) {
+          lines.push(`Their usual trouser leg (${trouserCue.toLowerCase()}) lines up with this band, which supports the recommendation.`);
+        } else {
+          lines.push(`Their usual trouser leg label (${trouserCue.toLowerCase()}) doesn’t fully match this band, so use the fitting to confirm the final choice.`);
+        }
+      }
+
+      if (ratioPct != null) {
+        if (ratioPct < 43) {
+          lines.push(`Their legs are slightly shorter in proportion to height (${ratioPct.toFixed(1)}% of total height), so watch for the boot sitting a touch lower on the hip.`);
+        } else if (ratioPct > 48) {
+          lines.push(`Their legs are slightly longer in proportion to height (${ratioPct.toFixed(1)}% of total height), so the boot may sit a touch higher on the hip.`);
+        } else {
+          lines.push(`Leg proportion to height is within a typical range (${ratioPct.toFixed(1)}% of total height).`);
+        }
+      }
+
+      if (comfort === 'softer') {
+        lines.push(`For customers who prefer a softer, roomier feel, you can favour the shorter band if they are borderline, as long as the top edge stays below the hip bone.`);
+      } else if (comfort === 'firmer') {
+        lines.push(`For customers who like a firmer squeeze, you can favour the longer band if they are borderline, provided there’s no pinching behind the knee.`);
+      }
+
+      if (method === 'manual') {
+        lines.push(`Because the measurement is recorded as manual / not specified, treat this as an advisory starting point and tighten confidence when you can capture a checked tape or AR reading.`);
+      }
+
+      if (!isJetBoots) {
+        lines.push(`For RecoveryAir boots used on a table or bed, make sure the heel still sits fully down in the boot and the top edge doesn’t cut into the knee crease.`);
+      }
+
+      return lines.join(' ');
+    }
+
+    function buildMeasurementCheck(opts) {
+      const { heightCm, officialLeg, band, model } = opts;
+      if (!heightCm || !officialLeg || !band || band === 'Unknown') return null;
+
+      const ratio = (officialLeg / heightCm) * 100;
+      const isJetBoots = model.indexOf('JetBoots') === 0;
+      const label = isJetBoots ? 'JetBoots' : 'RecoveryAir';
+
+      if (ratio < 42 || ratio > 50) {
+        return `Quick sense-check: the Therabody leg for this ${label} size is ${officialLeg.toFixed(1)} cm, which is ${ratio.toFixed(1)}% of their height. That’s slightly outside the usual range, so double-check the hip-to-floor measurement before finalising the size.`;
+      }
+
+      return `Sense-check: the Therabody leg for this ${label} size is ${officialLeg.toFixed(1)} cm, about ${ratio.toFixed(1)}% of their height, which sits in a typical range.`;
+    }
+
+    function buildFitNuances(opts) {
+      const { band, ratioPct, model } = opts;
+      if (!band || band === 'Unknown') {
+        return 'Run a sizing to see notes on how the boot should sit on the hip and knee.';
+      }
+
+      const isJetBoots = model.indexOf('JetBoots') === 0;
+      const lines = [];
+
+      if (isJetBoots) {
+        lines.push(`For ${band} JetBoots, the heel should sit fully down in the pocket with the top edge just below the hip bone.`);
+      } else {
+        lines.push(`For ${band} RecoveryAir boots, the heel should sit fully down with an easy bend at the knee and no digging into the crease.`);
+      }
+
+      if (ratioPct != null) {
+        if (ratioPct < 43) {
+          lines.push(`Because their legs are a little shorter vs height, the boot may sit a touch lower — focus on heel placement and comfort around the knee.`);
+        } else if (ratioPct > 48) {
+          lines.push(`Because their legs are a little longer vs height, the boot may sit a touch higher — make sure it doesn’t push into the hip or knee crease.`);
+        }
+      }
+
+      lines.push(`Always check: heel fully seated, top edge below hip bone, and no pinching behind the knee under pressure.`);
+      return lines.join(' ');
+    }
+
+    function heightTextFromInputs(ft, inch, cm) {
+      if (cm) {
+        return `${cm.toFixed(1)} cm`;
+      }
+      if (ft != null || inch != null) {
+        const f = ft || 0;
+        const i = inch || 0;
+        return `${f}ft ${i}in`;
+      }
+      return '';
+    }
+
+    function buildWhatsAppMessage(params, fitStatus) {
+      const {
+        model, band, outseam, officialLeg,
+        confidence, method, heightText
+      } = params;
+
+      if (!band || band === 'Unknown' || !outseam) {
+        return 'Run a sizing in the app first to generate the advisory message.';
+      }
+
+      const lines = [];
+      const statusLabel = fitStatus === 'confirmed'
+        ? 'Confirmed fit in-store'
+        : 'Advisory sizing based on measurements';
+
+      lines.push(`JetBoots™ Sizing Report — ${statusLabel}`);
+      lines.push('');
+      lines.push(`Recommended size: *${band}* for *${model}*.`);
+      lines.push(`Outseam (hip→floor): ${outseam.toFixed(1)} cm`);
+      lines.push(`Official Therabody leg length: ${officialLeg.toFixed(1)} cm`);
+      if (heightText) {
+        lines.push(`Height: ${heightText}`);
+      }
+      if (confidence != null) {
+        lines.push(`Confidence: ${confidence}% (${methodBadgeLabel(method)})`);
+      } else {
+        lines.push(`Measurement method: ${methodBadgeLabel(method)}`);
+      }
+      lines.push('');
+      lines.push('Fit guidance:');
+      lines.push('• Heel should sit fully down in the heel pocket.');
+      lines.push('• Top edge sits just below the hip bone.');
+      lines.push('• If it feels low or bunches behind the knee, try the adjacent size.');
+      if (fitStatus === 'advisory') {
+        lines.push('');
+        lines.push('If this is a gift or remote sizing, I recommend a fitting session before fully unboxing or recycling packaging, so we can swap size easily if needed.');
+      }
+      return lines.join('\n');
+    }
+
+    /* ---------- MAIN CALCULATION ---------- */
+    function runSizing() {
+      const model = els.model.value;
+      const comfort = els.comfort.value;
+      const heightFeet = parseNumber(els.heightFeet.value);
+      const heightInches = parseNumber(els.heightInches.value);
+      const heightCmInput = parseNumber(els.heightCm.value);
+      const outseam = parseNumber(els.outseam.value);
+      const method = els.method.value;
+      const trouserLength = els.trouserLength.value;
+
+      if (!outseam || outseam < 40) {
+        els.statusText.textContent = 'Enter an outseam in cm (hip bone → floor) to calculate sizing.';
+        return;
+      }
+
+      const heightCm = heightCmInput || cmFromFeetInches(heightFeet, heightInches);
+      const heightKnown = !!heightCm;
+
+      const isJetBoots = model.indexOf('JetBoots') === 0;
+      const offset = isJetBoots ? 10 : 12;
+      const officialLeg = outseam ? outseam - offset : null;
+
+      const { band } = getLegBand(model, officialLeg);
+      const borderline = isBorderline(model, officialLeg);
+      const trouserCue = getTrouserCue(trouserLength);
+      const ratioPct = computeLegProportion(officialLeg, heightCm);
+      const propEdge = isProportionEdgeCase(ratioPct);
+
+      const confidence = computeConfidence({
+        method,
+        heightKnown,
+        borderline,
+        propEdge,
+        band,
+        trouserCue
+      });
+
+      const badgeList = buildBadges({
+        model,
+        band,
+        trouserCue,
+        method,
+        confidence,
+        borderline,
+        propEdge
+      });
+      renderBadges(badgeList);
+
+      els.resultsTitle.textContent = band && band !== 'Unknown'
+        ? `${band} size recommended for ${model}.`
+        : `Size recommendation for ${model}.`;
+
+      const mainParagraph = buildMainParagraph({
+        model,
+        outseam,
+        officialLeg,
+        band,
+        borderline,
+        method,
+        comfort,
+        trouserCue,
+        ratioPct
+      });
+      els.resultsBody.innerHTML = mainParagraph;
+
+      const measurementCheck = buildMeasurementCheck({
+        heightCm,
+        officialLeg,
+        band,
+        model
+      });
+      if (measurementCheck) {
+        els.measurementCheckBox.style.display = 'block';
+        els.measurementCheckBox.textContent = measurementCheck;
+      } else {
+        els.measurementCheckBox.style.display = 'none';
+      }
+
+      if (appRoot.classList.contains('pro-view')) {
+        const nuancesText = buildFitNuances({
+          band,
+          ratioPct,
+          model
+        });
+        els.fitNuancesBox.textContent = nuancesText;
+      }
+
+      const fitStatus = document.querySelector('input[name="fitStatus"]:checked')?.value || 'confirmed';
+      const heightText = heightTextFromInputs(heightFeet, heightInches, heightCm);
+      const waText = buildWhatsAppMessage({
+        model,
+        band,
+        outseam,
+        officialLeg,
+        confidence,
+        method,
+        heightText
+      }, fitStatus);
+      els.whatsAppText.value = waText;
+
+      els.statusText.textContent = 'Recommendation updated. Use the client report to share a summary if needed.';
+    }
+
+    els.recommendBtn.addEventListener('click', runSizing);
+
+    /* update WhatsApp text when fit status radio changes */
+    document.addEventListener('change', (e) => {
+      if (e.target.name === 'fitStatus') {
+        runSizing();
+      }
+    });
+
+    /* ---------- RESET ---------- */
+    els.resetBtn.addEventListener('click', () => {
+      els.model.selectedIndex = 0;
+      els.comfort.value = 'standard';
+      els.heightFeet.value = '';
+      els.heightInches.value = '';
+      els.heightCm.value = '';
+      els.outseam.value = '';
+      els.method.value = 'manual';
+      els.waist.value = '';
+      els.trouserLength.value = 'unsure';
+      els.calf.value = '';
+      els.athletic.value = 'standard';
+
+      els.badgeRow.innerHTML = '';
+      els.resultsTitle.textContent = 'No size calculated yet.';
+      els.resultsBody.innerHTML = 'Fill in the measurements above and tap <strong>Get recommendation</strong> to see the suggested size and guidance.';
+      els.measurementCheckBox.style.display = 'none';
+      if (els.fitNuancesBox) {
+        els.fitNuancesBox.textContent = 'When a result is calculated, you’ll see notes here on how the size should sit on the hip and knee, plus a quick fit diagnostic.';
+      }
+      els.whatsAppText.value = 'Run a sizing in the app first to generate the advisory message here.';
+      els.statusText.textContent = 'Enter measurements above to produce a size recommendation.';
+    });
+
+    /* ---------- COPY WHATSAPP MESSAGE ---------- */
+    els.copyWhatsAppBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(els.whatsAppText.value);
+        els.statusText.textContent = 'WhatsApp message copied to clipboard.';
+      } catch (err) {
+        els.statusText.textContent = 'Copy not available — select and copy the text manually.';
+      }
+    });
+
+    /* ---------- PRINTABLE REPORT ---------- */
+    els.printBtn.addEventListener('click', () => {
+      const model = els.model.value;
+      const outseam = parseNumber(els.outseam.value);
+      const heightFeet = parseNumber(els.heightFeet.value);
+      const heightInches = parseNumber(els.heightInches.value);
+      const heightCmInput = parseNumber(els.heightCm.value);
+      const heightCm = heightCmInput || cmFromFeetInches(heightFeet, heightInches);
+      const method = els.method.value;
+      const trouserLength = els.trouserLength.value;
+
+      const isJetBoots = model.indexOf('JetBoots') === 0;
+      const offset = isJetBoots ? 10 : 12;
+      const officialLeg = outseam ? outseam - offset : null;
+
+      const { band } = getLegBand(model, officialLeg);
+      const heightText = heightTextFromInputs(heightFeet, heightInches, heightCm);
+      const trouserCue = getTrouserCue(trouserLength);
+
+      const win = window.open('', '_blank', 'width=600,height=800');
+      if (!win) return;
+
+      const doc = win.document;
+      doc.write('<!DOCTYPE html><html><head><title>JetBoots™ Client Report</title>');
+      doc.write('<meta charset="UTF-8"/>');
+      doc.write('<style>');
+      doc.write('body{font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif;padding:20px;background:#f6f7fb;color:#111827;}');
+      doc.write('h1{font-size:20px;margin-bottom:4px;} h2{font-size:15px;margin:16px 0 6px;}');
+      doc.write('p{font-size:13px;line-height:1.5;margin:4px 0;}');
+      doc.write('ul{font-size:13px;line-height:1.5;margin:4px 0 4px 18px;}');
+      doc.write('.muted{color:#6b7280;font-size:12px;}');
+      doc.write('</style></head><body>');
+
+      doc.write('<h1>JetBoots™ Sizing Report</h1>');
+      doc.write('<p class="muted">Advisory size based on in-store measurements. This is not a medical device.</p>');
+
+      doc.write('<h2>Summary</h2>');
+      if (band && band !== 'Unknown') {
+        doc.write('<p><strong>Recommended size:</strong> ' + band + ' for ' + model + '.</p>');
+      } else {
+        doc.write('<p><strong>Recommended size:</strong> To be confirmed after re-measurement.</p>');
+      }
+      if (outseam) {
+        doc.write('<p><strong>Hip-to-floor (outseam):</strong> ' + outseam.toFixed(1) + ' cm</p>');
+      }
+      if (officialLeg != null) {
+        doc.write('<p><strong>Official Therabody leg length:</strong> ' + officialLeg.toFixed(1) + ' cm</p>');
+      }
+      if (heightText) {
+        doc.write('<p><strong>Height (recorded):</strong> ' + heightText + '</p>');
+      }
+
+      doc.write('<h2>Context</h2>');
+      doc.write('<p>This sizing is designed to place the heel naturally in the boot and protect the knee crease during compression. ');
+      doc.write('If the product feels uncomfortable or the fit changes over time, please speak to a Therabody Specialist for a re-check.</p>');
+
+      if (trouserCue) {
+        doc.write('<p><strong>Trouser leg cue:</strong> ' + trouserCue + ' (customer’s usual trouser length label).</p>');
+      }
+
+      doc.write('<h2>How the boot should fit</h2>');
+      doc.write('<ul>');
+      doc.write('<li>Heel sits fully down in the heel pocket, without needing to pull or force the boot.</li>');
+      doc.write('<li>Top edge of the boot sits just below the hip bone when standing.</li>');
+      doc.write('<li>No pinching or digging in behind the knee during inflation.</li>');
+      doc.write('<li>Pressure feels even from ankle to thigh when the programme runs.</li>');
+      doc.write('<li>You can bend the knee comfortably without the boot cutting in.</li>');
+      doc.write('</ul>');
+
+      doc.write('<h2>Care notes</h2>');
+      doc.write('<ul>');
+      doc.write('<li>Use on bare legs or thin clothing for the most accurate fit.</li>');
+      doc.write('<li>Always follow Therabody guidelines and consult your clinician if you have any medical questions.</li>');
+      doc.write('<li>Do not sleep in the boots or use them over open wounds.</li>');
+      doc.write('</ul>');
+
+      doc.write('<p class="muted">This report is a sizing guide only and does not replace medical advice.</p>');
+
+      doc.write('</body></html>');
+      doc.close();
+      win.focus();
+    });
+  })();
+</script>
+</body>
+</html>
